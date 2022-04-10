@@ -1,0 +1,8 @@
+data:
+    name: daki
+
+services:
+    mock-server:
+        url: https://my-json-server.typicode.com/dakiman/json-server
+    lageri:
+        url: http://127.0.0.1:8000/api
