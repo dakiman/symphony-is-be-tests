@@ -4,6 +4,7 @@ import com.daki.apitesting.model.Item;
 import com.daki.apitesting.model.Post;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class LageriClient extends BaseClient {
         return baseUrl;
     }
 
-    public Item[] getItems() {
+    public ResponseEntity<Item[]> getItems() {
         return executeRequest(HttpMethod.GET, "/test", Item[].class);
     }
 
