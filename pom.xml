@@ -8,13 +8,13 @@
 		<version>2.6.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.daki</groupId>
+	<groupId>com.dragan</groupId>
 	<artifactId>api-testing</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>api-testing</name>
+	<name>house-service-tests</name>
 	<description>API Testing with Spring Boot</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>18</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

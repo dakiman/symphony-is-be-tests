@@ -1,4 +1,4 @@
-package com.daki.apitesting;
+package com.dragan.house.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
