@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class HouseDataProvider {
+    public static Integer EXISTING_HOUSE_PRICE = 799000;
 
     public static List<Integer> getMaxPrices() {
         return List.of(
@@ -33,5 +34,8 @@ public class HouseDataProvider {
         );
     }
 
+    private static List<String> providerForCities() {
+        return getCities();
+    }
 
 }

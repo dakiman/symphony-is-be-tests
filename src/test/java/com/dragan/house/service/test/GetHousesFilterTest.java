@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
@@ -34,6 +33,15 @@ class GetHousesFilterTest {
         List<House> houses = response.getBody();
 
         assertThat(houses.size(), greaterThan(0));
+    }
+
+    @Test
+    void getHousesMaxAndMinPriceEqual() {
+        ResponseEntity<List<House>> response = housesClient.getHouses(EXISTING_HOUSE_PRICE.toString(), EXISTING_HOUSE_PRICE.toString(), null);
+        List<House> houses = response.getBody();
+
+        assertThat(houses.size(), greaterThan(0));
+        assertThat(houses.get(0).getPrice(), equalTo(EXISTING_HOUSE_PRICE));
     }
 
     @ParameterizedTest(name = "Filter by invalid city {0}")
