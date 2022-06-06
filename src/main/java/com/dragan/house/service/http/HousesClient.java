@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,13 +21,14 @@ public class HousesClient extends BaseClient {
         return baseUrl;
     }
 
-    public ResponseEntity<List<House>> getHouses(String priceGte, String priceLte, String city) {
-//        ?price_gte=&price_lte=&city=Austin
+    public ResponseEntity<List<House>> getHouses(Integer priceGte, Integer priceLte, String city) {
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("price_gte", priceGte);
+        params.put("price_lte", priceLte);
+        params.put("city", city);
+
         return executeRequest(HttpMethod.GET, "/houses", new ParameterizedTypeReference<List<House>>() {
-        }, null, Map.of(
-                "price_gte", priceGte,
-                "price_lte", priceLte,
-                "city", city
-        ));
+        }, null, params);
     }
 }

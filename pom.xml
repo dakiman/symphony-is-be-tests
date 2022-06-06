@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.dragan</groupId>
-	<artifactId>api-testing</artifactId>
+	<artifactId>house-service-tests</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>house-service-tests</name>
-	<description>API Testing with Spring Boot</description>
+	<description>House Service API Tests</description>
 	<properties>
 		<java.version>18</java.version>
 	</properties>
