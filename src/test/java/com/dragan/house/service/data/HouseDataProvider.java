@@ -10,10 +10,10 @@ public class HouseDataProvider {
 
     public static List<Integer> getMaxPrices() {
         return List.of(
-                250000,
                 500000,
-                750000,
-                1000000
+                600000,
+                700000,
+                8000000
         );
     }
 
@@ -28,14 +28,10 @@ public class HouseDataProvider {
     public static List<Integer> getMinPrices() {
         return List.of(
                 100000,
-                250000,
-                500000,
-                750000
+                200000,
+                300000,
+                400000
         );
-    }
-
-    private static List<String> providerForCities() {
-        return getCities();
     }
 
 }

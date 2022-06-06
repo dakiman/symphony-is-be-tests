@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.dragan.house.service.data.HouseDataProvider.*;
+import static com.dragan.house.service.util.AssertUtils.assertResponseIsOkWithBody;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,26 +30,23 @@ class GetHousesFilterTest {
 
     @Test
     void getHousesNoFilter() {
-        ResponseEntity<List<House>> response = housesClient.getHouses(null, null, null);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(null, null, null);
 
         assertThat(houses.size(), greaterThan(0));
     }
 
     @Test
     void getHousesMaxAndMinPriceEqual() {
-        ResponseEntity<List<House>> response = housesClient.getHouses(EXISTING_HOUSE_PRICE.toString(), EXISTING_HOUSE_PRICE.toString(), null);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(EXISTING_HOUSE_PRICE.toString(), EXISTING_HOUSE_PRICE.toString(), null);
 
         assertThat(houses.size(), greaterThan(0));
-        assertThat(houses.get(0).getPrice(), equalTo(EXISTING_HOUSE_PRICE));
+        houses.forEach(house -> assertThat(house.getPrice(), equalTo(EXISTING_HOUSE_PRICE)));
     }
 
     @ParameterizedTest(name = "Filter by invalid city {0}")
     @ValueSource(strings = {"asdasasd", "123asd", "Au%20stin", "New%20%20$#York"})
     void getHousesInvalidCityFilter(String city) {
-        ResponseEntity<List<House>> response = housesClient.getHouses(null, null, city);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(null, null, city);
 
         assertTrue(houses.isEmpty());
     }
@@ -56,8 +54,7 @@ class GetHousesFilterTest {
     @ParameterizedTest(name = "Filter by invalid min price = {0}")
     @ValueSource(strings = {"asdasasd", "123asd", "123,000$", "123%20000"})
     void getHousesInvalidMinPriceFilter(String minPrice) {
-        ResponseEntity<List<House>> response = housesClient.getHouses(minPrice, null, null);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(minPrice, null, null);
 
         assertTrue(houses.isEmpty());
     }
@@ -65,8 +62,7 @@ class GetHousesFilterTest {
     @ParameterizedTest(name = "Filter by invalid max price = {0}")
     @ValueSource(strings = {"asdasasd", "123asd", "123,000$", "123%20000"})
     void getHousesInvalidMaxPriceFilter(String maxPrice) {
-        ResponseEntity<List<House>> response = housesClient.getHouses(null, maxPrice, null);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(null, maxPrice, null);
 
         assertTrue(houses.isEmpty());
     }
@@ -74,8 +70,7 @@ class GetHousesFilterTest {
     @ParameterizedTest(name = "Filter by min price = {0}")
     @MethodSource("providerForMinPrices")
     void getHousesFilterByMinPrice(Integer minPrice) {
-        ResponseEntity<List<House>> response = housesClient.getHouses(minPrice.toString(), null, null);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(minPrice.toString(), null, null);
 
         houses.forEach(house -> {
             assertThat(house.getPrice(), greaterThan(minPrice));
@@ -85,8 +80,7 @@ class GetHousesFilterTest {
     @ParameterizedTest(name = "Filter by max price = {0}")
     @MethodSource("providerForMaxPrices")
     void getHousesFilterByMaxPrice(Integer maxPrice) {
-        ResponseEntity<List<House>> response = housesClient.getHouses(null, maxPrice.toString(), null);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(null, maxPrice.toString(), null);
 
         houses.forEach(house -> {
             assertThat(house.getPrice(), lessThan(maxPrice));
@@ -96,8 +90,7 @@ class GetHousesFilterTest {
     @ParameterizedTest(name = "Filter by city {0}")
     @MethodSource("providerForCities")
     void getHousesFilterByCity(String city) {
-        ResponseEntity<List<House>> response = housesClient.getHouses(null, null, city);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(null, null, city);
 
         houses.forEach(house -> {
             assertThat(house.getCity(), is(city));
@@ -107,8 +100,7 @@ class GetHousesFilterTest {
     @ParameterizedTest(name = "Filter by max price = {0} and min price = {1}")
     @MethodSource("providerForMaxAndMinPrices")
     void getHouseFilterByMinAndMaxPrice(Integer maxPrice, Integer minPrice) {
-        ResponseEntity<List<House>> response = housesClient.getHouses(minPrice.toString(), maxPrice.toString(), null);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(minPrice.toString(), maxPrice.toString(), null);
 
         houses.forEach(house -> {
             assertThat(house.getPrice(), is(both(greaterThan(minPrice)).and(lessThan(maxPrice))));
@@ -118,8 +110,7 @@ class GetHousesFilterTest {
     @ParameterizedTest(name = "Filter by city = {0} and min price = {1}")
     @MethodSource("providerForMinPricesAndCities")
     void getHousesFilterByMinPriceAndCity(String city, Integer minPrice) {
-        ResponseEntity<List<House>> response = housesClient.getHouses(minPrice.toString(), null, city);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(minPrice.toString(), null, city);
 
         houses.forEach(house -> {
             assertThat(house.getPrice(), greaterThan(100000));
@@ -130,8 +121,7 @@ class GetHousesFilterTest {
     @ParameterizedTest(name = "Filter by city = {0} and max price = {1}")
     @MethodSource("providerForMaxPricesAndCities")
     void getHousesFilterByMaxPriceAndCity(String city, Integer maxPrice) {
-        ResponseEntity<List<House>> response = housesClient.getHouses(maxPrice.toString(), null, city);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(maxPrice.toString(), null, city);
 
         houses.forEach(house -> {
             assertThat(house.getPrice(), greaterThan(maxPrice));
@@ -142,13 +132,19 @@ class GetHousesFilterTest {
     @ParameterizedTest(name = "Filter by city = {0}, max price = {1} and min price = {2}")
     @MethodSource("providerForMinPricesMaxPricesAndCities")
     void getHousesFilterByMinPriceMaxPriceAndCity(String city, Integer maxPrice, Integer minPrice) {
-        ResponseEntity<List<House>> response = housesClient.getHouses(minPrice.toString(), maxPrice.toString(), city);
-        List<House> houses = response.getBody();
+        List<House> houses = getHouses(minPrice.toString(), maxPrice.toString(), city);
 
         houses.forEach(house -> {
             assertThat(house.getPrice(), is(both(greaterThan(minPrice)).and(lessThan(maxPrice))));
             assertThat(house.getCity(), is(city));
         });
+    }
+
+    private List<House> getHouses(String minPrice, String maxPrice, String city) {
+        ResponseEntity<List<House>> response = housesClient.getHouses(minPrice, maxPrice, city);
+        assertResponseIsOkWithBody(response);
+
+        return response.getBody();
     }
 
     private static List<String> providerForCities() {
@@ -170,8 +166,7 @@ class GetHousesFilterTest {
 
         maxPrices.forEach(maxPrice -> {
             minPrices.forEach(minPrice -> {
-                if (maxPrice > minPrice)
-                    arguments.add(Arguments.of(maxPrice, minPrice));
+                if (maxPrice > minPrice) arguments.add(Arguments.of(maxPrice, minPrice));
             });
         });
 
