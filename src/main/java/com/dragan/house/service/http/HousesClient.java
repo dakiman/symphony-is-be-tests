@@ -21,11 +21,11 @@ public class HousesClient extends BaseClient {
         return baseUrl;
     }
 
-    public ResponseEntity<List<House>> getHouses(Integer priceGte, Integer priceLte, String city) {
+    public ResponseEntity<List<House>> getHouses(String minPrice, String maxPrice, String city) {
         Map<String, Object> params = new HashMap<>();
 
-        params.put("price_gte", priceGte);
-        params.put("price_lte", priceLte);
+        params.put("price_gte", minPrice);
+        params.put("price_lte", maxPrice);
         params.put("city", city);
 
         return executeRequest(HttpMethod.GET, "/houses", new ParameterizedTypeReference<List<House>>() {
