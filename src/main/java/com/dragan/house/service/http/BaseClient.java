@@ -17,7 +17,8 @@ import static com.dragan.house.service.util.JsonUtils.objectToJsonString;
 public abstract class BaseClient {
 
     protected abstract String getBaseUrl();
-    private RestTemplate restTemplate;
+
+    private final RestTemplate restTemplate;
 
     BaseClient() {
         restTemplate = initRestTemplate();
@@ -28,18 +29,7 @@ public abstract class BaseClient {
             path = bindQueryParams(path, params);
         }
 
-        try {
-            return restTemplate
-                    .exchange(path, httpMethod, getHttpEntity(body), typeReference, params);
-        } catch (HttpServerErrorException | HttpClientErrorException exception) {
-            Object responseBody = null;
-            try {
-                responseBody = new ObjectMapper().readValue(exception.getResponseBodyAsString(), typeReference.getClass());
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException("Error during parsing response!", e);
-            }
-            return new ResponseEntity(responseBody, exception.getStatusCode());
-        }
+        return restTemplate.exchange(path, httpMethod, getHttpEntity(body), typeReference, params);
     }
 
     private String bindQueryParams(String path, Map<String, ?> params) {
@@ -49,7 +39,7 @@ public abstract class BaseClient {
                 uriBuilder.queryParam(key, value);
         });
 
-        path = uriBuilder.encode().toUriString();
+        path = uriBuilder.build(false).toUriString();
         return path;
     }
 

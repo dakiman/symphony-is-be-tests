@@ -13,7 +13,7 @@ public class HouseDataProvider {
                 500000,
                 600000,
                 700000,
-                8000000
+                800000
         );
     }
 

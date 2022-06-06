@@ -91,6 +91,7 @@ class GetHousesFilterTest {
     @MethodSource("providerForCities")
     void getHousesFilterByCity(String city) {
         List<House> houses = getHouses(null, null, city);
+        assertThat(houses.size(), greaterThan(0));
 
         houses.forEach(house -> {
             assertThat(house.getCity(), is(city));
