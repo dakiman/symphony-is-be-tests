@@ -29,7 +29,18 @@ public abstract class BaseClient {
             path = bindQueryParams(path, params);
         }
 
-        return restTemplate.exchange(path, httpMethod, getHttpEntity(body), typeReference, params);
+        try {
+            return restTemplate
+                    .exchange(path, httpMethod, getHttpEntity(body), typeReference, params);
+        } catch (HttpServerErrorException | HttpClientErrorException exception) {
+            Object responseBody = null;
+            try {
+                responseBody = new ObjectMapper().readValue(exception.getResponseBodyAsString(), typeReference.getClass());
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Error during parsing response!", e);
+            }
+            return new ResponseEntity(responseBody, exception.getStatusCode());
+        }
     }
 
     private String bindQueryParams(String path, Map<String, ?> params) {

@@ -1,6 +1,6 @@
 services:
-  house-service:
-    url: http://localhost:3000
+  blog-service:
+    url: http://localhost:8080
 logging:
   level:
     root: DEBUG
